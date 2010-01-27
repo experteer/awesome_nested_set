@@ -178,7 +178,7 @@ module CollectiveIdea #:nodoc:
             find(:all, :conditions => ["#{quoted_parent_column_name} = ? #{scope.call(node)}", node], :order => "#{quoted_left_column_name}, #{quoted_right_column_name}, id").each{|n| set_left_and_rights.call(n) }
             # set right
             node[right_column_name] = indices[scope.call(node)] += 1    
-            node.save!    
+            node.save(false)    
           end
                               
           # Find root node(s)
@@ -439,7 +439,7 @@ module CollectiveIdea #:nodoc:
           options[:conditions] = scopes.inject({}) do |conditions,attr|
             conditions.merge attr => self[attr]
           end unless scopes.empty?
-          self.class.base_class.scoped options
+          self.class.scoped options
         end
         
         def store_new_parent
