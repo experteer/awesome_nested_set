@@ -3,6 +3,22 @@ require 'test_helper'
 class Note < ActiveRecord::Base
   acts_as_nested_set :scope => [:notable_id, :notable_type]
 end
+
+class Region < ActiveRecord::Base
+  acts_as_nested_set
+end
+
+class RegionSTI < Region
+end
+
+class Room < ActiveRecord::Base
+end
+
+class RoomNoSTI < Room
+  set_inheritance_column nil
+  acts_as_nested_set
+end
+
 class Default < ActiveRecord::Base
   acts_as_nested_set
   set_table_name 'categories'
@@ -16,6 +32,7 @@ class RenamedColumns < ActiveRecord::Base
 end
 
 class AwesomeNestedSetTest < TestCaseClass
+
 
   def test_left_column_default
     assert_equal 'lft', Default.acts_as_nested_set_options[:left_column]
@@ -797,5 +814,27 @@ class AwesomeNestedSetTest < TestCaseClass
     assert @called
   ensure
     Category.after_save_callback_chain.pop
+  end
+  
+  def test_sti
+    Region.delete_all
+    root=RegionSTI.create!(:name => '1')
+    child=Region.create!(:name => '1.1')
+    child.move_to_child_of(root)
+
+    loaded_root=Region.roots.first
+    assert_equal root,loaded_root
+    assert_equal child,loaded_root.children[0]
+  end
+
+  def test_no_sti
+    Room.delete_all
+    root=RoomNoSTI.create!(:name => '1')
+    child=RoomNoSTI.create!(:name => '1.1')
+    child.move_to_child_of(root)
+
+    loaded_root=RoomNoSTI.roots.first
+    assert_equal root,loaded_root
+    assert_equal child,loaded_root.children[0]
   end
 end

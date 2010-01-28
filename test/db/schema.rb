@@ -27,4 +27,21 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :red, :integer
     t.column :black, :integer
   end
+
+  create_table :regions, :force => true do |t|
+    t.column :type,:string
+    t.column :name, :string
+    t.column :parent_id, :integer
+    t.column :lft, :integer
+    t.column :rgt, :integer
+  end
+
+  create_table :rooms, :force => true do |t|
+    t.column :type,:string
+    t.column :name, :string
+    t.column :parent_id, :integer
+    t.column :lft, :integer
+    t.column :rgt, :integer
+  end
+
 end

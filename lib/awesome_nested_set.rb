@@ -59,10 +59,9 @@ module CollectiveIdea #:nodoc:
             include InstanceMethods
             extend Columns
             extend ClassMethods
-            
-            belongs_to :parent, :class_name => self.base_class.to_s,
+            belongs_to :parent, :class_name => (self.inheritance_column ? self.to_s : self.base_class.to_s),
               :foreign_key => parent_column_name
-            has_many :children, :class_name => self.base_class.to_s,
+            has_many :children, :class_name => (self.inheritance_column ? self.to_s : self.base_class.to_s),
               :foreign_key => parent_column_name, :order => quoted_left_column_name
 
             attr_accessor :skip_before_destroy
@@ -439,7 +438,11 @@ module CollectiveIdea #:nodoc:
           options[:conditions] = scopes.inject({}) do |conditions,attr|
             conditions.merge attr => self[attr]
           end unless scopes.empty?
-          self.class.scoped options
+          if self.class.inheritance_column.blank?
+            self.class.scoped options
+          else
+            self.class.base_class.scoped options
+          end
         end
         
         def store_new_parent
