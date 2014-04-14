@@ -5,7 +5,7 @@ module CollectiveIdea #:nodoc:
 
         def initialize(model)
           @model = model
-          @scope = model.all
+          @scope = model.scoped
           @parent = arel_table.alias('parent')
         end
 
@@ -13,7 +13,7 @@ module CollectiveIdea #:nodoc:
           query.count == 0
         end
 
-        private
+        #private
 
         attr_reader :model, :parent
         attr_accessor :scope
