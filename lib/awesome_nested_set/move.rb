@@ -38,7 +38,6 @@ module CollectiveIdea #:nodoc:
                  :to => :instance
 
         delegate :arel_table, :class, :to => :instance, :prefix => true
-        delegate :base_class, :to => :instance_class, :prefix => :instance
 
         def where_statement(left_bound, right_bound)
           instance_arel_table[left_column_name].in(left_bound..right_bound).
@@ -84,7 +83,7 @@ module CollectiveIdea #:nodoc:
 
         def lock_nodes_between!(left_bound, right_bound)
           # select the rows in the model between a and d, and apply a lock
-          instance_base_class.right_of(left_bound).left_of_right_side(right_bound).
+          instance_class.right_of(left_bound).left_of_right_side(right_bound).
                               select(primary_column_name).lock(true)
         end
 
