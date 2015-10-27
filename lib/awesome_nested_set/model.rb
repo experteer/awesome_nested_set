@@ -145,7 +145,7 @@ module CollectiveIdea #:nodoc:
             end
           end
 
-          self.class.base_class.unscoped.nested_set_scope options
+          self.class.unscoped.nested_set_scope options
         end
 
         # Separate an other `nested_set_scope` for unscoped model
@@ -247,7 +247,7 @@ module CollectiveIdea #:nodoc:
         end
 
         def reload_target(target, position)
-          if target.is_a? self.class.base_class
+          if target.is_a? self.class
             target.reload
           elsif position != :root
             nested_set_scope.where(primary_column_name => target).first!
